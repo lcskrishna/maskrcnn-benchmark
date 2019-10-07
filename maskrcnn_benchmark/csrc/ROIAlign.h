@@ -16,7 +16,9 @@ at::Tensor ROIAlign_forward(const at::Tensor& input,
                             const int sampling_ratio) {
   if (input.type().is_cuda()) {
 #ifdef WITH_CUDA
-    return ROIAlign_forward_cuda(input, rois, spatial_scale, pooled_height, pooled_width, sampling_ratio);
+    //return ROIAlign_forward_cuda(input, rois, spatial_scale, pooled_height, pooled_width, sampling_ratio);
+    at::Tensor result = ROIAlign_forward_cpu(input.to(at::kCPU), rois.to(at::kCPU), spatial_scale, pooled_height, pooled_width, sampling_ratio);
+    return result.to(at::kCUDA);
 #else
     AT_ERROR("Not compiled with GPU support");
 #endif

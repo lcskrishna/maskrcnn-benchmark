@@ -17,7 +17,9 @@ at::Tensor nms(const at::Tensor& dets,
     if (dets.numel() == 0)
       return at::empty({0}, dets.options().dtype(at::kLong).device(at::kCPU));
     auto b = at::cat({dets, scores.unsqueeze(1)}, 1);
-    return nms_cuda(b, threshold);
+    //return nms_cuda(b, threshold);
+    at::Tensor result = nms_cpu(dets.to(at::kCPU), scores.to(at::kCPU), threshold);
+    return result.to(at::kCUDA);
 #else
     AT_ERROR("Not compiled with GPU support");
 #endif
